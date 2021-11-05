@@ -6,4 +6,4 @@
 * `image_cropping`: folder containing image_cropping script for cropping wells from plate images
 * `read_input.py`: reads in images to feed into datasets.py for compilation or directly into main.py if desired
 * `image_processing.py`: image processing for feature extraction
-* createAVI.py: creating a .avi movies from the raw image sequence; simplifies the process of manual srunching scoring
+* `createAVI.py`: script for creating .avi movies from the raw image sequence; simplifies the process of manual srunching scoring
