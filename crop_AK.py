@@ -54,3 +54,5 @@ def crop(num_plates, wells =-1, start_frame=0, end_frame=500, x_start=350, y_sta
     del imgs  # explicitly free up memory
 
 
+crop(1, wells =9, start_frame=0, end_frame=100, x_start=350, y_start=75, x_end=4900, y_end=3200, well_width=590, well_height=590,
+         outputPath="/Desktop/results", plateFolder = "/Desktop/plateFolder", image_type=".png")

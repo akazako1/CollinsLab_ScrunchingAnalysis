@@ -6,10 +6,9 @@ import scipy.io as sio
 import cv2
 from os.path import exists
 from os import makedirs
-import read_input as rin  ## Alex's script
-import skan
-from skan import pre
-from skimage import morphology
+import read_input as rin  
+#from skan import pre
+#from skimage import morphology
 import random as rng
 import filtering
 import math
@@ -20,8 +19,8 @@ import crop_interface as interface
 refPt = []
 # General params
 num_plates = 1
-wells = [-1]
-wells = list((np.arange(2, 49, 1)))
+wells = list((np.arange(2, 49, 1)))   # all wells 
+wells = [10, 20,33, 13]     
 
 
 # Well cropping params
@@ -31,19 +30,20 @@ x_start = 250
 y_start = 35
 x_end = 1840
 y_end = 1170
-well_width = 193
-well_height = 193
+well_width = 190
+well_height = 190
 
 image_type = ".png"
-plateFolder = "/Volumes/Collins_Lab/15"
-plateFolder = "/Volumes/Collins_Lab/My data/Christinas plates/2021_08_12 Arina 3 chem scrunching/16"
+plateFolder = '/Users/arina/Downloads/2021_08_12 Arina 3 chem scrunching/18'
+#plateFolder = '/Users/arina/Downloads/2021_08_12 Arina 3 chem scrunching/18/results/well_9'
+
 outputPath = plateFolder + "/results"
 #outputPath = "/Volumes/DISK_IMG/02/results"
 
 
 
 # Select the corner wells. Press Q to quit. Press R to restart.
-
+print("Please select the corner wells")
 refPts = interface.getPoints(plateFolder)
 x_start, y_start = int(refPts[0][0]-0.5*well_width), int(refPts[0][1]-0.5*well_height)
 x_end, y_end = int(refPts[1][0]+0.5*well_width), int(refPts[2][1]+0.5*well_height)
