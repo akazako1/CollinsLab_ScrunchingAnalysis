@@ -22,26 +22,38 @@ has_early_peaks = {}
 early_peak_count = 0   # number of sets w
 all_sets_count = 0  # number of identified peak sets
 
-filepath = "/Volumes/Collins_Lab/15"
-plateFolder = "/Volumes/Collins_Lab/My data/Christinas plates/2021_08_12 Arina 3 chem scrunching/16"
 
+# filepath is where the 
+filepath = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
+
+plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
+
+
+
+
+#### SPECIFY WELLS TO ANALYZE HERE ####
 wells = np.arange(1, 49, 1)
-wells = [1]
+wells = [3, 41, 48]     
+
+
+
+
 peakDataFolder = filepath + '/peak_data'
 if exists(peakDataFolder) is False:
     makedirs(peakDataFolder)
 
 
 for well in wells:   # for every well in the list of wells
-
     filename = filepath + "/results/well_data/MAL_well" + str(well) + ".csv"
     currMAL = genfromtxt(filename, delimiter=',')
     currMAL = np.array(pd.DataFrame(currMAL).interpolate())
     currMAL = currMAL.reshape(-1, order='F')
     smoothing_frac = 6/len(currMAL)
-    smoothedMAL = pa.frac_lowess(currMAL, frac=smoothing_frac)  # todo this might need to be adjusted
+    smoothedMAL = pa.frac_lowess(currMAL, frac=smoothing_frac)  # TODO this might need to be adjusted
     MALs.append(smoothedMAL)
 
+
+    # create text files with COM, AspRatio data
     filename = filepath + "/results/well_data/COM_well" + str(well) + ".csv"
     currCOM = genfromtxt(filename, delimiter=',')
     COMs.append(currCOM)
@@ -49,7 +61,6 @@ for well in wells:   # for every well in the list of wells
     filename = filepath + "/results/well_data/AspRatio_well" + str(well) + ".csv"
     currAspRatio = genfromtxt(filename, delimiter=',')
     AspRatios.append(currAspRatio)
-
 
 
 all_peak_data = []

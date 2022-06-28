@@ -7,8 +7,6 @@ import cv2
 from os.path import exists
 from os import makedirs
 import read_input as rin  
-#from skan import pre
-#from skimage import morphology
 import random as rng
 import filtering
 import math
@@ -16,30 +14,33 @@ import image_crop
 import crop_interface as interface
 
 
+####### SPECIFY THE PLATE FOLDER ######
+plateFolder = '/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17'
+
+# change these if necessary 
+image_type = ".png"
+outputPath = plateFolder + "/results"
+
+
+
+
 refPt = []
 # General params
 num_plates = 1
-wells = list((np.arange(2, 49, 1)))   # all wells 
-wells = [10, 20,33, 13]     
+wells = np.arange(1, 49, 1)
+wells = [3, 41, 48]     
 
 
 # Well cropping params
 start_frame = 1
-end_frame = 100  # number of frames to be loaded at once for internal processing. 100-150 is optimal for speed
+end_frame = 100  # number of frames to be loaded AT ONCE for internal processing.  
+                 # 100-150 is optimal for speed (more frames is too memory intense)
 x_start = 250
 y_start = 35
 x_end = 1840
 y_end = 1170
 well_width = 190
 well_height = 190
-
-image_type = ".png"
-plateFolder = '/Users/arina/Downloads/2021_08_12 Arina 3 chem scrunching/18'
-#plateFolder = '/Users/arina/Downloads/2021_08_12 Arina 3 chem scrunching/18/results/well_9'
-
-outputPath = plateFolder + "/results"
-#outputPath = "/Volumes/DISK_IMG/02/results"
-
 
 
 # Select the corner wells. Press Q to quit. Press R to restart.

@@ -106,8 +106,6 @@ Inputs:
  - filepath: filepath to the folder with the image sequnce
  - outpath: filepath to where you want to save the .avi movie
 """
-
-
 def createAVI(start_frame, last_frame, scale_percent=100, fps=5, well_num=None, filepath='/Users/Desktop', outpath=None):
     if outpath == None:
         outpath = filepath + "/fullPlate" + ".avi"
@@ -120,8 +118,7 @@ def createAVI(start_frame, last_frame, scale_percent=100, fps=5, well_num=None, 
             outpath = filepath + "/well" + str(well_num) + "frames" + str(start_frame) + "-" + str(last_frame) + ".avi"
         else:
             newPath = filepath + "/" + str(i) + ".jpeg"
-
-        print(newPath)
+        print("reading image", newPath)
         img = cv.imread(newPath)
         if img is not None:
             if well_num == -1:
@@ -134,6 +131,8 @@ def createAVI(start_frame, last_frame, scale_percent=100, fps=5, well_num=None, 
                 img = cv.resize(img, dsize)    # resize image
             img_array.append(img)
         else:
+
+            print("img is None")
             continue
     fourcc = cv.VideoWriter_fourcc('M', 'J', 'P', 'G')
     video = cv.VideoWriter(outpath, fourcc, fps, (width, height))
@@ -150,18 +149,20 @@ if __name__ == "__main__":
     last_frame = int(input("Enter the end frame: "))
     well_num = int(input("Enter the well number: "))  #or -1 for all wells
 
-    #filepath = input("Enter the filepath : ")
-    #filepath = "\'" + filepath + "\'"
-    filepath = '/Users/arina/Downloads/2021_08_12 Arina 3 chem scrunching/18'
+    filepath = input("Enter the filepath : ")
+    filepath = "\'" + filepath + "\'"
+    
+    
+    # filepath = '/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/18/'
+    
     if int(well_num) != -1:
         filepath = filepath + "/results"
-
-
-    #filepath =  filepath + "/well_" + str(well_num)     
-    #outpath = filepath + "/well" + well_num + ".avi"
-
+    #filepath =  filepath + "/well_" + str(well_num)   
+    outpath = filepath + ".avi"
+    
     createAVI(start_frame, last_frame, scale_percent=100, fps=5,
               well_num=well_num, filepath=filepath, outpath=None)
+    
     """ 
 
     #outpath = '/Users/arina/Downloads/plate2_0207-0208.avi'
@@ -170,11 +171,11 @@ if __name__ == "__main__":
 
  
     # reading the image
-    img = cv.imread(filepath+"/1.jpeg", 1)
+    #img = cv.imread(filepath+"/1.jpeg", 1)
  
     # displaying the image
-    cv.imshow('image', img)
-    params = [190]
+    #cv.imshow('image', img)
+    #arams = [190]
  
     # setting mouse handler for the image
     # and calling the click_event() function
@@ -189,6 +190,7 @@ if __name__ == "__main__":
     
     # wait for a key to be pressed to exit
     cv.waitKey(0)
-    """
+    
     # close the window
     cv.destroyAllWindows()
+"""

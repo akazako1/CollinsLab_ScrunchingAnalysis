@@ -229,6 +229,9 @@ def displaySkeletons(image, skeleton):
     plt.show()
 """
 
+""" 
+
 displayFullVideo(1, 1510, scale_percent = 80, fps=10, filepath='/Users/Arina/Downloads/17/17', outpath='/Users/Arina/Downloads/mefl_17_0910_25uM.avi')
 displayFullVideo(1, 1510, scale_percent = 80, fps=10, filepath='/Users/Arina/Downloads/18', outpath='/Users/Arina/Downloads/mefl_18_0910_25uM.avi')
 displayFullVideo(1, 1510, scale_percent = 80, fps=10, filepath='/Users/Arina/Downloads/19', outpath='/Users/Arina/Downloads/mefl_19_0910_50uM.avi')
+"""

@@ -2,6 +2,12 @@
 This is the main scrunching tracking script
 It assumes that the raw data has been preprocessed: individuals wells cropped
 and the images of individual wells were saved in the corresponding folders
+
+
+
+Output: the following data is generated for each of the respective wells
+1) MAL (txt), 2) MAL vs time plot, 3) COM (txt), Aspect Ratio (txt)
+
 """
 import numpy as np
 from numpy import asarray
@@ -18,13 +24,13 @@ from os.path import exists
 from os import makedirs
 import scrunching_track
 
-plateFolder = "/Volumes/Collins_Lab/My data/Christinas plates/2021_08_12 Arina 3 chem scrunching/16/"
+plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
 outputPath = plateFolder + "/results"
 wellDataFolder = outputPath + '/well_data'
 
 wells = list(np.arange(2, 49, 1))
 #wells = [16, 10, 22, 40, 48]
-#wells = [1]
+wells = [3, 41, 48]     
 
 start_frame=1
 end_frame=1500
@@ -51,11 +57,10 @@ for ind in wells:
     if exists(wellVidsFolder) is False:
             makedirs(wellVidsFolder)
 
-    visualize_results.displayVideo(filtered_imgs=np.array(curr_centermost_arr),
-                                   outpath=wellVidsFolder + "/" + "binary_well" + str(ind) + '.avi')
+    #visualize_results.displayVideo(filtered_imgs=np.array(curr_centermost_arr),outpath=wellVidsFolder + "/" + "binary_well" + str(ind) + '.avi')
 
-    #visualize_results.plotMAL(curr_mal_arr, MAL=True, title=("well" + str(ind)),
-    #                         outpath=(wellDataFolder + "/MAL plot" + str(ind)), show=False)
+    visualize_results.plotMAL(curr_mal_arr, MAL=True, title=("well" + str(ind)),
+                             outpath=(wellDataFolder + "/MAL plot" + str(ind)), show=False)
 
     # visualize_results.displayOrigVideo(start_frame=start_frame, last_frame=end_frame, filepath=plateFolder, wellNum=wellNum, outpath=wellVidsFolder + "/" + "orig_well" + str(wellNum) + '.avi')
 
