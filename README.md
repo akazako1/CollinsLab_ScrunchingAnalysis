@@ -12,5 +12,5 @@
 
 
 ### Running the scripts
-1. Create folders with individual wells by running 'main_load_crop.py`. Specify the plate fol
+1. Create folders with individual wells by running 'main_load_crop.py`. Specify the plate folder
 2. 

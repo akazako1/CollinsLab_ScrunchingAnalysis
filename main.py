@@ -3,8 +3,6 @@ This is the main scrunching tracking script
 It assumes that the raw data has been preprocessed: individuals wells cropped
 and the images of individual wells were saved in the corresponding folders
 
-
-
 Output: the following data is generated for each of the respective wells
 1) MAL (txt), 2) MAL vs time plot, 3) COM (txt), Aspect Ratio (txt)
 
