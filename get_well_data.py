@@ -1,3 +1,4 @@
+
 """
 This is the main scrunching tracking script
 It assumes that the raw data has been preprocessed: individuals wells cropped
@@ -5,7 +6,7 @@ and the images of individual wells were saved in the corresponding folders
 
 Output: the following data is generated for each of the respective wells
 1) MAL (txt), 2) MAL vs time plot, 3) COM (txt), Aspect Ratio (txt)
-
+4) AVI movies showing the tracking results 
 """
 import numpy as np
 from numpy import asarray
@@ -13,19 +14,18 @@ from numpy import savetxt
 import visualize_results
 #matplotlib.use('Qt5Agg')  # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 from matplotlib import pyplot as plt
-from scipy import signal
 import cv2 as cv
 import os
 from os.path import exists
 from os import makedirs
 import scrunching_track
 
-plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
+plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/18"
 outputPath = plateFolder + "/results"
 wellDataFolder = outputPath + '/well_data'
 
 wells = list(np.arange(1, 49, 1))
-wells = [3, 41, 48]     
+wells = [1]     
 
 start_frame=1
 end_frame=1500
@@ -46,17 +46,16 @@ for ind in wells:
     wellDataFolder = outputPath + '/well_data'
     if exists(wellDataFolder) is False:
             makedirs(wellDataFolder)
+    
     wellVidsFolder = outputPath + '/well_vids'
     if exists(wellVidsFolder) is False:
             makedirs(wellVidsFolder)
-
-    #visualize_results.displayVideo(filtered_imgs=np.array(curr_centermost_arr),outpath=wellVidsFolder + "/" + "binary_well" + str(ind) + '.avi')
+    visualize_results.displayVideo(filtered_imgs=np.array(curr_centermost_arr),outpath=wellVidsFolder + "/" + "binary_well" + str(ind) + '.avi')
 
     visualize_results.plotMAL(curr_mal_arr, MAL=True, title=("well" + str(ind)),
                              outpath=(wellDataFolder + "/MAL plot" + str(ind)), show=False)
 
     # visualize_results.displayOrigVideo(start_frame=start_frame, last_frame=end_frame, filepath=plateFolder, wellNum=wellNum, outpath=wellVidsFolder + "/" + "orig_well" + str(wellNum) + '.avi')
-
     data = asarray(curr_mal_arr)
     path = os.path.expanduser(wellDataFolder + '/MAL_well' + str(ind) + '.csv')
     savetxt(path, data, delimiter=',', fmt='%1.3f')

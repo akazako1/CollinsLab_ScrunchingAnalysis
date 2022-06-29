@@ -1,20 +1,11 @@
-import cv2
 import math
 import numpy as np
 import skimage.morphology as skmorph
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatche
 from skimage.measure import regionprops, label
-from skimage.color import label2rgb
-from skimage.morphology.selem import ball
-from read_input import read_input
-from skimage.segmentation import clear_border
-from skimage.morphology import closing, square
 from PIL import Image
 from scipy.stats import skew, kurtosis
 from statistics import variance
-from time import time
-import matplotlib.patches as mpatches
 
 #outputs might be boundary points, skel, COM, head/tail
 

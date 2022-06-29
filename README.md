@@ -8,7 +8,7 @@
 * `filtering.py`: image processing for feature extraction
 * `createAVI.py`: script for creating .avi movies from the raw image sequence; simplifies the process of manual srunching scoring
 * `main_peak_analysis.py`: generates .txt files with data that can be used for further
-
+* `get_well_data.py`
 
 
 ### Running the scripts
@@ -17,8 +17,8 @@
    -  If you only want to analyze specific wells, change the `wells` variable
    -  Refer to the script for more guidance on how to do that
 
-2. 
-
+2. To generate `.csv` files with frame-by-frame data for individual wells run  `get_well_data.py`
+   - Refer to the script to adjust parameters/specify wells 
 
 
 

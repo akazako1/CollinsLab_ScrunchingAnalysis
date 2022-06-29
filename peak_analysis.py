@@ -3,11 +3,8 @@ import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')  # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 import statsmodels.api as sm
 import numpy as np
-import os
 import pandas as pd
 from numpy import genfromtxt
-from os import makedirs
-from os.path import exists
 from itertools import combinations, chain
 from scipy.signal import find_peaks, peak_prominences, peak_widths
 from statistics import stdev, mean

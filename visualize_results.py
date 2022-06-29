@@ -7,7 +7,6 @@ import read_input as rin
 import data_collection
 import skimage.measure as skmeasure
 import glob
-import read_input
 
 
 def plot_mean_line(data, time):

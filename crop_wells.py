@@ -7,8 +7,11 @@ import math
 import crop_interface as interface
 import os
 import cv2 as cv
-import read_input as rin
 import matplotlib.pyplot as plt
+
+
+
+
 
 # well size params are set for a 5496 × 3672 image
 # if wellNum parameter is not specified or set to -1, all wells will be cropped
