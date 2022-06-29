@@ -10,8 +10,6 @@ Output: the following data is generated for each of the respective wells
 import numpy as np
 from numpy import asarray
 from numpy import savetxt
-import csv
-import matplotlib
 import visualize_results
 #matplotlib.use('Qt5Agg')  # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 from matplotlib import pyplot as plt
@@ -26,14 +24,11 @@ plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 c
 outputPath = plateFolder + "/results"
 wellDataFolder = outputPath + '/well_data'
 
-wells = list(np.arange(2, 49, 1))
-#wells = [16, 10, 22, 40, 48]
+wells = list(np.arange(1, 49, 1))
 wells = [3, 41, 48]     
 
 start_frame=1
 end_frame=1500
-
-
 centermost_arr, mals_arr, coms_arr, asp_ratios_arr = [], [], [], []
 
 for ind in wells:

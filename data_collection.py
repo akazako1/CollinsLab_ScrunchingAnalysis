@@ -14,7 +14,6 @@ from PIL import Image
 from scipy.stats import skew, kurtosis
 from statistics import variance
 from time import time
-import image_processing
 import matplotlib.patches as mpatches
 
 #outputs might be boundary points, skel, COM, head/tail
@@ -250,7 +249,7 @@ def num_crossings(sorted, endpoints, midpt, im_shape):
         #plt.imshow(cross_image)
         #plt.savefig("test_images/test_image_cross.png")
 
-        branch_num_img = image_processing.filter_branchpoints(cross_image)
+        branch_num_img = filtering.filter_branchpoints(cross_image)
         crossings = np.argwhere(branch_num_img)
 
         #plt.imshow(branch_num_img)

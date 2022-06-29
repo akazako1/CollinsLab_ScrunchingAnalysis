@@ -5,6 +5,13 @@ import numpy as np
 refPt = []
 cropping = False
 
+    # Notes on the name conventions:
+    # Folder name should NOT contain " " or '' special characters
+    # Sample good folderpath: 
+    # '/Users/arina/Desktop/scrunching_movies/5/'
+    # In this example, `5` is the name of the folder containing the entire scrunching movie for the plate 
+
+
 def click_and_crop(event, x, y, flags, param):
     # grab references to the global variables
     global refPt, cropping
@@ -63,11 +70,8 @@ def click_event(event, x, y, flags, params):
 
     # checking for right mouse clicks
     if event == cv.EVENT_RBUTTONDOWN:
-
-        # displaying the coordinates
-        # on the Shell
+        # displaying the coordinates on the Shell
         print(x, ' ', y)
-
         # displaying the coordinates
         # on the image window
         font = cv.FONT_HERSHEY_SIMPLEX
@@ -85,7 +89,6 @@ def click_event(event, x, y, flags, params):
 def crop_well(filepath, x, y, well_radius):
     if outpath == None:
         outpath = filepath + "/fullPlate.avi"
-    img_array = []
     for i in range(start_frame, last_frame):
         newPath = filepath + "/" + str(i) + ".jpeg"
         # print(newPath)
@@ -131,7 +134,6 @@ def createAVI(start_frame, last_frame, scale_percent=100, fps=5, well_num=None, 
                 img = cv.resize(img, dsize)    # resize image
             img_array.append(img)
         else:
-
             print("img is None")
             continue
     fourcc = cv.VideoWriter_fourcc('M', 'J', 'P', 'G')
@@ -149,48 +151,22 @@ if __name__ == "__main__":
     last_frame = int(input("Enter the end frame: "))
     well_num = int(input("Enter the well number: "))  #or -1 for all wells
 
-    filepath = input("Enter the filepath : ")
-    filepath = "\'" + filepath + "\'"
+    filepath = input("Enter the filepath : ")    # path to the folder with the images
     
-    
-    # filepath = '/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/18/'
-    
-    if int(well_num) != -1:
+    # change these if necessary 
+    image_type = ".png"
+    outputPath = filepath + "/results"
+
+    if int(well_num) != -1:    # get inside the wells folder
         filepath = filepath + "/results"
+    #filepath = "\'" + filepath + "\'"
+
+    print("\nfilepath is", filepath)
+
     #filepath =  filepath + "/well_" + str(well_num)   
     outpath = filepath + ".avi"
-    
     createAVI(start_frame, last_frame, scale_percent=100, fps=5,
               well_num=well_num, filepath=filepath, outpath=None)
     
-    """ 
-
-    #outpath = '/Users/arina/Downloads/plate2_0207-0208.avi'
-
-    #createAVI(start_frame, last_frame, scale_percent = 70, fps = 10, filepath=filepath, outpath=outpath)
-
- 
-    # reading the image
-    #img = cv.imread(filepath+"/1.jpeg", 1)
- 
-    # displaying the image
-    #cv.imshow('image', img)
-    #arams = [190]
- 
-    # setting mouse handler for the image
-    # and calling the click_event() function
-    #cv.setMouseCallback('image', click_event, params)
-    #
-    # draw_rect(img, x,y, 190)
 
 
-    clone = img.copy()
-    cv.namedWindow("image")
-    cv.setMouseCallback("image", click_and_crop)
-    
-    # wait for a key to be pressed to exit
-    cv.waitKey(0)
-    
-    # close the window
-    cv.destroyAllWindows()
-"""

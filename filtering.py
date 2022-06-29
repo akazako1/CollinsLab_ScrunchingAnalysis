@@ -1,23 +1,122 @@
 
-import image_processing
 import numpy as np
 import skimage.morphology as skmorph
 import skimage.measure as skmeasure
 from scipy import ndimage
 import skimage.segmentation as skseg
 import matplotlib.pyplot as plt
-import matplotlib
 import math
 from os.path import exists
 from os import makedirs
 import cv2 as cv
+from scipy.stats import skew, kurtosis
+from statistics import variance
+import filtering
+
+
+def get_neighbors(arr, row, col):
+    neighbors = np.zeros((0, 2))
+
+    if(arr[row-1][col-1]):
+        neighbors = np.append(neighbors, [[row-1, col-1]], axis = 0)
+    if(arr[row-1][col]):
+        neighbors = np.append(neighbors, [[row-1, col]], axis = 0)
+    if(arr[row-1][col+1]):
+        neighbors = np.append(neighbors, [[row-1, col+1]], axis = 0)
+
+    if(arr[row][col-1]):
+        neighbors = np.append(neighbors, [[row, col-1]], axis = 0)
+    if(arr[row][col+1]):
+        neighbors = np.append(neighbors, [[row, col+1]], axis = 0)
+
+    if(arr[row+1][col-1]):
+        neighbors = np.append(neighbors, [[row+1, col-1]], axis = 0)
+    if(arr[row+1][col]):
+        neighbors = np.append(neighbors, [[row+1, col]], axis = 0)
+    if(arr[row+1][col+1]):
+        neighbors = np.append(neighbors, [[row+1, col+1]], axis = 0)
+    return neighbors
+
+
+
+#For a pixel that has 2 neighbors, check if those neighbors are adjacent to each other
+def check_adjacent(p1, p2):
+    x_dif = abs(p1[0] - p2[0])
+    y_dif = abs(p1[1] - p2[1])
+    return (x_dif + y_dif <= 1)
+
+
+
+def filter_branchpoints(arr):
+    new_arr = np.zeros(arr.shape)
+    padded = np.pad(arr, pad_width=1, mode="constant", constant_values = 0)
+
+    points = np.argwhere(arr)
+
+    for [i, j] in points:
+        neighbors = get_neighbors(padded, i + 1, j + 1)
+        if (neighbors.shape[0] > 3):
+            new_arr[i][j] = 1
+        elif (neighbors.shape[0] == 3):
+            if (not (check_adjacent(neighbors[0], neighbors[1]) or check_adjacent(neighbors[0], neighbors[2]) or check_adjacent(neighbors[1], neighbors[2]))):
+                new_arr[i][j] = 1
+    return new_arr
+
+
+
+def filter_endpoints(arr):
+    new_arr = np.zeros(arr.shape)
+    padded = np.pad(arr, pad_width=1, mode="constant", constant_values = 0)
+
+    points = np.argwhere(arr)
+
+    for [i, j] in points:
+        neighbors = get_neighbors(padded, i + 1, j + 1)
+        if (neighbors.shape[0] == 1):
+            new_arr[i][j] = 1
+
+        if (neighbors.shape[0] == 2):
+            if (check_adjacent(neighbors[0], neighbors[1])):
+                new_arr[i][j] = 1
+    return new_arr
+
+
+
+
+def maxproj(arr):
+    return np.amax(arr, axis = 0)
+
+
+
+def minproj(arr):
+    return np.amin(arr, axis = 0)
+
+
+
+#Filter image to only contain largest object
+def filter_largest_object(img, leeway, ind=-1):
+    labeled = skmeasure.label(img)
+    props = skmeasure.regionprops(labeled)
+    if (len(props) == 0):
+        return img, 0
+    maxarea = max([i.area for i in props])
+    largest = skmorph.remove_small_objects(labeled.astype(bool), min_size = maxarea-leeway)
+
+    while (sum(sum(largest))==0):  #check if there is at least one object left; a completely empty matrix will sum up to zero
+        leeway += 50
+        if ind != -1:
+            print("adjusting leeway for image at ind", ind, "; new leeway  is ", leeway)
+        largest = skmorph.remove_small_objects(labeled.astype(bool), min_size=maxarea - leeway)
+    return largest.astype(bool), maxarea
+
+
 
 
 def check_contracted(imgs, index):
     store_images = False
 
-    whole_path = image_processing.minproj(imgs)
-    proj_diff = image_processing.maxproj(imgs) - whole_path
+    whole_path = filtering.minproj(imgs)
+    proj_diff = filtering.maxproj(imgs) - whole_path
     proj_diff = 255 - proj_diff
 
     if store_images:
@@ -36,20 +135,16 @@ def check_contracted(imgs, index):
         plt.imshow(darkPixels)
         plt.savefig(filteredResultsFolder + str(index) + "_03minproj_filtered.png")
 
-    largest, maxarea = image_processing.filter_largest_object(darkPixels, 1)
+    largest, maxarea = filtering.filter_largest_object(darkPixels, 1)
     #print("Contracted check: " + str(maxarea))
-
-
     if (maxarea / (imgs.shape[1] * imgs.shape[2]) < 300 / (256 * 320)):
         return True #worm is contracted and swholetill for whole video
     else:
         return False
 
+
 def generate_disk_filter(imgs_shape):
     disk = skmorph.disk(imgs_shape[1]/2 - 1).astype(int)
-
-    #disk = cv2.resize(disk, (imgs.shape[2], imgs.shape[1]), interpolation=cv2.INTER_NEAREST)
-
     if (disk.shape[0] < imgs_shape[1]):
         disk = np.append(disk, np.zeros((1, disk.shape[1])), axis=0)
 
@@ -57,8 +152,6 @@ def generate_disk_filter(imgs_shape):
         diff_left = math.floor((imgs_shape[2] - disk.shape[1])/2)
         diff_right = math.ceil((imgs_shape[2] - disk.shape[1])/2)
         disk = np.concatenate((np.zeros((disk.shape[0], diff_left)), disk, np.zeros((disk.shape[0], diff_right))), axis=1)
-
-    #print(disk.shape)
     disk = np.invert(disk > 0)
 
     disks = np.zeros(imgs_shape)
@@ -81,8 +174,6 @@ def get_centermost_big_region(filtered, center_point, index, i, big_enough_ratio
     props = skmeasure.regionprops(labeled)
 
     #check if the area of the object is not the worm
-
-
     #print(len(props))
     if (len(props) == 0):
         return filtered
@@ -112,6 +203,8 @@ def get_centermost_big_region(filtered, center_point, index, i, big_enough_ratio
     closest_label = centermost_prop_set.label
     centermost = (labeled == closest_label)
 
+
+    ## CHANGE THIS!!! 
     filteredResultsFolder = "/Users/Arina/Desktop/02/results/testImages/"
     if (store_images and i % 20 == 0):
         plt.imshow(centermost)
@@ -130,8 +223,6 @@ def get_centermost(filtered, center_point, big_enough_ratio):
 
     max_area = max([i.area for i in props])
     big_enough_area = max_area * big_enough_ratio
-    # print([i.area for i in props])
-
     big_enough_props = []
     for prop_set in props:
         if prop_set.area >= big_enough_area:
@@ -153,12 +244,9 @@ def get_centermost(filtered, center_point, big_enough_ratio):
 
 
 
-
-
 """ 
-Used on individ images
-if some parts of the worm body are being excluded it can help to get a more complete threshold,
-but it also has the risk of adding unwanted shadows/dark sections.
+Used on individual images
+if some parts of the worm body are being excluded it can help to get a more complete threshold, but it also has the risk of adding unwanted shadows/dark sections.
 """
 def restore_removed_patches(filtered, original, index, i):
     store_images = False
@@ -226,7 +314,7 @@ def filter_images(imgs, no_background, index):
         cutoffs[cutoffs > 100] = 100  # change all vals less than 100 to 100
         filtered = imgs[:] < cutoffs[:, None, None]
     else:
-        imgs = 255 - (image_processing.maxproj(imgs) - imgs)
+        imgs = 255 - (maxproj(imgs) - imgs)
 
         if store_images:
             for i in range(0, imgs.shape[0], 20):  #to store only some imgs
@@ -259,7 +347,6 @@ def filter_images(imgs, no_background, index):
             impath = filteredResultsFolder + "/" + "ind_" + str(index) + "i_" + str(i) +  "_3filtered.png"
             image = np.uint8(filtered[i])
             cv.imwrite(impath, image*255)
-            #print("writing ", impath)
     return filtered
 
 
@@ -276,6 +363,5 @@ def refilter(imgs, cutoff_adj = 15):
 
 
 
-
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()

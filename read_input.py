@@ -9,7 +9,7 @@ import matplotlib.image as image
 """
 Creates an imgs list containing all frames for one well
 """
-def read_input(num_plates, start_frame, end_frame, filepath):
+def read_input(start_frame, end_frame, filepath):
     imgs = []
     for i in range(start_frame, end_frame):
         """ def read_input(num_plates, start_frame,  num_frames, filepath):
@@ -27,6 +27,7 @@ def read_input(num_plates, start_frame, end_frame, filepath):
                 imgs.insert(i, im)
         """
         newPath = filepath + "/" + str(i) + ".jpeg"
+        print('filepath reading', newPath)
         if i%100 == 0:
             print("reading ", newPath)
         # im = image.imread(newPath)

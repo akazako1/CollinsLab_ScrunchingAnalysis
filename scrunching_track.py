@@ -104,9 +104,20 @@ def calculate_asp_ratios(centermost_arr):  #todo; make sure indexes match
             asp_ratio_arr.append(np.nan)
     return asp_ratio_arr
 
+
+"""
+Analyzes video for one well 
+
+
+Returns arrays with frame-by-frame information for the well:
+    centermost_arr - an array containing the XXXXXX
+    mal_arr - major axis length 
+    com_arr - Center of Mass tracking 
+    asp_ratio_arr - Aspect Ratio value
+
+"""
 def analyze(wellNum, plateFolder, start_frame, end_frame):
     index = 1  # todo: change
-
     end_frame -= 1 #todo fix
     big_enough_ratio = 0.3
     max_displacement = 120  # max displacement between two frames (in pix)  # todo: chenge?
@@ -129,14 +140,12 @@ def analyze(wellNum, plateFolder, start_frame, end_frame):
     refiltered_imgs = filtering.refilter(reanalyze, cutoff_adj=20)
     filtered_imgs[tuple(lost_indx)] = refiltered_imgs
 
-    image_dims = (filtered_imgs[0].shape[0], filtered_imgs[0].shape[1])  # the size of one well
+    image_dims = (filtered_imgs[0].shape[0], filtered_imgs[0].shape[1])  # size of one well
     center_point = [filtered_imgs[0].shape[0] / 2, filtered_imgs[0].shape[1] / 2]
 
     #tracked_areas = []
     mal_coord_arr = []
-    minor_axes = []
     mal_arr = []
-    # largest_arr = []
     centermost_arr = []
     com_arr = []
     asp_ratio_arr = []
@@ -177,7 +186,7 @@ def analyze(wellNum, plateFolder, start_frame, end_frame):
         temp_areas_arr.append(sum(sum(centermost)))
 
     av_worm_size = calculate_worm_size(temp_areas_arr)
-    print("average worm size: ", av_worm_size)
+    #print("average worm size: ", av_worm_size)
 
     for i in range(1, filtered_imgs.shape[0]):  # for every frame    use e.g, imgs[1,:,:] to get one frame
         img = np.array(filtered_imgs[i])
@@ -188,32 +197,24 @@ def analyze(wellNum, plateFolder, start_frame, end_frame):
 
         # check if the COM of the object is too far away for it to be a worm:
         disp = np.linalg.norm(com_arr[last_ind] - np.array(com))  # Euclidean  distance; need to conver to np arrays from tuples
-        #print(com_arr - np.array(com))
-        #print(com_arr[last_ind])
-        #print("last_ind: ", last_ind)
-        #print(i)
-        #print("disp " + str(disp))
 
         if disp > 50 and curr_discarded < 5:
             centermost = select_closest(img, com_arr, center_point, last_non_nan_ind=last_ind, fr=big_enough_ratio,
                                         max_displacement=max_displacement)
 
         if (np.any(centermost)) and (sum(sum(np.array(centermost))) < av_worm_size * 2):
-
-            # largest, maxarea = image_processing.filter_largest_object(img, leeway=100, ind=i)
+            # largest, maxarea = filtering.filter_largest_object(img, leeway=100, ind=i)
             # label_image = label(largest)
             label_image = label(centermost)
             # axis_major, inertia, skewness, kurt, vari = data_collection.inertia2(label_image, "major")
             #axis_minor, inertia, skewness, kurt, vari = data_collection.inertia2(label_image, "minor")
             mal_coord, mal = data_collection.inertia(label_image, "major")
             _, minor = data_collection.inertia(label_image, "minor")
-
             # largest_arr.append(np.uint8(largest))
             centermost_arr.append(np.uint8(centermost))
             # tracked_areas.append(maxarea)
             mal_coord_arr.append(mal_coord)
             com_arr.append(com)
-            #minor_axes.append(axis_minor)
             mal_arr.append(mal)
             last_ind = len(mal_arr)-1  # store the last ind of the non-nan elem
 
@@ -232,20 +233,18 @@ def analyze(wellNum, plateFolder, start_frame, end_frame):
             # tracked_areas.append(np.nan)
             mal_coord_arr.append(np.nan)
             mal_arr.append(np.nan)
-            #minor_axes.append(np.nan)
             asp_ratio_arr.append(np.nan)
 
             curr_discarded += 1
             total_discarded += 1
 
     print(total_discarded, "(", int(total_discarded / (end_frame - start_frame) * 100), "%) of frames for well", wellNum, "were discarded")
-
     return centermost_arr, mal_arr, com_arr, asp_ratio_arr
 
 
 """
 
-leg = []
+lgnd = []
 for i, com_arr in enumerate(COMs):
     leg.append("Well " + str(wells[i]))
     velocities = calculate_velocities(com_arr)
@@ -259,6 +258,6 @@ for i, com_arr in enumerate(COMs):
     #outpath = os.path.expanduser("/Users/Arina/Desktop/02/results/peak_sets/peak sets well" + str(wells[i]) + ".png")
     #plt.savefig(outpath)
     plt.show()
-plt.legend(leg)
+plt.legend(lgnd)
 plt.close(0)
 """

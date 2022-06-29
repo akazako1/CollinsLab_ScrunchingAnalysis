@@ -1,15 +1,11 @@
-# code for displaying multiple images in one figure
-
 # import libraries
 import cv2 as cv
 import numpy as np
-import matplotlib
 #matplotlib.use('Qt5Agg')    # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 from matplotlib import pyplot as plt
 import read_input as rin
 import data_collection
 import skimage.measure as skmeasure
-
 import glob
 import read_input
 
@@ -137,12 +133,6 @@ def plotAxes(img):
     ax.plot(x_coord_axis_minor2, y_coord_axis_minor2,  '-', linewidth=2)
 
 
-
-
-
-
-
-
 """
 Creates a pane of images to display
 needs some editing 
@@ -158,7 +148,7 @@ def showImgs():
     print(len(imgs))
     # reading images
     for i in range(rows*columns):
-        imgs = rin.read_input(1, 48, filepath="/Users/Arina/Desktop/9")
+        imgs = rin.read_input(48, filepath="/Users/Arina/Desktop/9")
         # Adds a subplot at the i-th position
         fig.add_subplot(rows, columns, i+1)
         # showing image

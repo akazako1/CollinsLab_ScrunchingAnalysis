@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import argparse
-import argparse
 
 
 # You then need to bind that function to a window that will capture the mouse click
@@ -9,7 +8,6 @@ import argparse
 newPath = "/Volumes/Collins_Lab/15/1.jpeg"
 img = cv2.imread(newPath)
 cv2.namedWindow('image')
-
 """
 refPt = []
 def click_and_crop(event, x, y, flags, img):
@@ -48,10 +46,6 @@ def getPoints(plateFolder):
         elif key == ord("r"):
             refPt=[]
             img=clone
-
-    # refPt[0][0] - 1/2 * well_width
-    # refPt[0][1] - 1/2 * well_height
-    #
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     return refPt

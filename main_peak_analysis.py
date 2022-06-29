@@ -115,10 +115,7 @@ for ind in range(len(wells)):
             continue
         else:
             final_peak_sets_new.append(list(peakinds_new))
-
-        #pa.zoom(peakinds_new, peak_data_new, smoothedMAL,mode="times")
-
-    print("WELL", wells[ind],":",final_peak_sets_new)
+    #print("WELL", wells[ind],":",final_peak_sets_new)
     total.append(final_peak_sets_new)
 
 
