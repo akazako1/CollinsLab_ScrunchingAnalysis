@@ -1,6 +1,7 @@
+from logging import raiseExceptions
 import matplotlib
 import matplotlib.pyplot as plt
-matplotlib.use('Qt5Agg')  # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
+#matplotlib.use('Qt5Agg')  # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 import statsmodels.api as sm
 import numpy as np
 import pandas as pd
@@ -9,14 +10,22 @@ from itertools import combinations, chain
 from scipy.signal import find_peaks, peak_prominences, peak_widths
 from statistics import stdev, mean
 import generate_synth_signal as synth_signal
+from os.path import exists
 
 
-def read_MAL_data(wellNum=None, filename=None):
-    if wellNum:
-        filename = "/Users/Arina/PycharmProjects/ScrunchingTrack/MAL data well" + str(wellNum) + ".csv"
-        # /Users/Arina/PycharmProjects/ScrunchingTrack/MAL data well1.csv
-    my_data = genfromtxt(filename, delimiter=',')
-    return my_data
+"""
+Returns a list of MAL datapoints 
+for a wellNum well
+folderPath: path to the original folder containing the scrunching movie
+"""
+def read_MAL_data(wellNum=None, folderPath=None):
+    filename = folderPath + "/results/well_data/MAL_well" + str(wellNum) + ".csv"
+    if wellNum and exists(filename):
+        try:
+            my_data = genfromtxt(filename, delimiter=',')
+            return my_data
+        except Exception as e:
+            print("File {0} not found. Check the name of file".format(filename))
 
 
 def ind_exists(sset, ind):
@@ -27,7 +36,7 @@ def ind_exists(sset, ind):
         return False
 
 
-"""  Get all combinations of (sequential) peaks in set of peaks with >3 peaks"""
+""" Get all combinations of (sequential) peaks in set of peaks with >3 peaks"""
 def get_combinations(sset, mode="sequential"):  # todo: check that other conditions still hold true when we get combinations
     ssets = []
     if len(sset) > 3:
@@ -49,7 +58,10 @@ def check_not_too_far(ssets, peak_data):
             ssets_cleaned.append(sset)
     return list(ssets_cleaned)
 
-""" Converts a set w peak indexes from the data table to peak timestamps (indexes in the MAL array) """
+
+
+""" Converts a set w peak indexes from the data table to peak timestamps
+ (indexes in the MAL array) """
 def to_timestamps(sset, peak_data) -> object:
     peak_set_times = []
     for ind in sset:
@@ -58,6 +70,9 @@ def to_timestamps(sset, peak_data) -> object:
     return list(peak_set_times)
 
 
+
+
+""" Smoothing function """
 def Lowess(data, pts=6, itn=3, order=1):
     data = pd.DataFrame(data)
     x = np.array(data.index, dtype=float)
@@ -174,6 +189,7 @@ def find_all_peaks(mal_arr, show=False):
         plt.close(0)
     return list(peakinds)
 
+
 """" 
 def find_right_valleys(mal_arr, peak_data):
     peak_inds, peak_dict = find_good_peaks(mal_arr)
@@ -261,7 +277,6 @@ def get_peak_data(mal_arr):
 
 
 def add_valley_info():
-
     peak_data[i][5], inds_left, inds_right = peak_prominences(mal_arr, [peak_data[i][1]], wlen=10)
     # 6th column: prominence of the peak
     peak_data[i][5] = peak_dict['prominences'][i]

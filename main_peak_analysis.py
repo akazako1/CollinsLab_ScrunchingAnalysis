@@ -1,6 +1,4 @@
-
 import numpy as np
-import os
 import pandas as pd
 from numpy import genfromtxt
 from os import makedirs
@@ -8,7 +6,6 @@ from os.path import exists
 from statistics import stdev, mean
 import statsmodels.api as sm
 import peak_analysis as pa
-
 
 
 fps = 5
@@ -23,28 +20,25 @@ early_peak_count = 0   # number of sets w
 all_sets_count = 0  # number of identified peak sets
 
 
-# filepath is where the 
-filepath = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
+##### SPECIFY filepath HERE ####
+plateFolder = "/Users/arina/Desktop/Collins/2021_08_12 Arina 3 chem scrunching/17"
 
-plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/17"
-
-
-
-
-#### SPECIFY WELLS TO ANALYZE HERE ####
-wells = np.arange(1, 49, 1)
-wells = [3, 41, 48]     
-
+##### SPECIFY WELLS TO ANALYZE HERE ####
+wells = np.arange(1, 49, 1)   # keep this line if you want to analyze all wells
+wells = [3, 41, 48]
+# use the format below to analyze only some wells
+# e.g. use
+# wells = [3, 41, 48]  
+# if you only want to analyze wells 3, 41, and 48
 
 
 
-peakDataFolder = filepath + '/peak_data'
+peakDataFolder = plateFolder + '/peak_data'
 if exists(peakDataFolder) is False:
     makedirs(peakDataFolder)
 
-
 for well in wells:   # for every well in the list of wells
-    filename = filepath + "/results/well_data/MAL_well" + str(well) + ".csv"
+    filename = plateFolder + "/results/well_data/MAL_well" + str(well) + ".csv"
     currMAL = genfromtxt(filename, delimiter=',')
     currMAL = np.array(pd.DataFrame(currMAL).interpolate())
     currMAL = currMAL.reshape(-1, order='F')
@@ -54,11 +48,11 @@ for well in wells:   # for every well in the list of wells
 
 
     # create text files with COM, AspRatio data
-    filename = filepath + "/results/well_data/COM_well" + str(well) + ".csv"
+    filename = plateFolder + "/results/well_data/COM_well" + str(well) + ".csv"
     currCOM = genfromtxt(filename, delimiter=',')
     COMs.append(currCOM)
 
-    filename = filepath + "/results/well_data/AspRatio_well" + str(well) + ".csv"
+    filename = plateFolder + "/results/well_data/AspRatio_well" + str(well) + ".csv"
     currAspRatio = genfromtxt(filename, delimiter=',')
     AspRatios.append(currAspRatio)
 
@@ -131,6 +125,10 @@ for ind in range(len(total)):
         resPy.append(0)
 print("total scrunching", count)
 
+
+
+# code below was written to automate comparison of matlab and python script results
+# feel free to ignore 
 
 resMAT = [1,1,1,1,0,1,0,1,0,0,0,1,0,1,1,1,1,0,1,1,0,0,0,1,1,1,1,1,0,1,0,0,0,0,1,1,1,0,1,0,1,1,1,1,1,1,0,1]
 corr_count = 0

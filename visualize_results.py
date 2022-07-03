@@ -1,7 +1,7 @@
 # import libraries
 import cv2 as cv
 import numpy as np
-#matplotlib.use('Qt5Agg')    # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
+# matplotlib.use('Qt5Agg')    # Apple doesn't like Tkinter (TkAgg backend) so I needed to change the backend to 'Qt5Agg'
 from matplotlib import pyplot as plt
 import read_input as rin
 import data_collection
@@ -17,23 +17,24 @@ def plot_mean_line(data, time):
 
 def displayVideo(filtered_imgs, outpath):
     frameSize = filtered_imgs[0].shape[:2]
-    fourcc = cv.VideoWriter_fourcc('M','J','P','G')
-    video = cv.VideoWriter(outpath, fourcc, 10, frameSize, False)   #10 fps
+    fourcc = cv.VideoWriter_fourcc('M', 'J', 'P', 'G')
+    video = cv.VideoWriter(outpath, fourcc, 10, frameSize, False)  # 10 fps
     for i, img in enumerate(filtered_imgs):
         img = np.uint8(img)*250
-        img = cv.putText(img, str(i), (30, 30), cv.FONT_HERSHEY_COMPLEX, 1, (200, 0, 0), 2)
+        img = cv.putText(img, str(i), (30, 30),
+                         cv.FONT_HERSHEY_COMPLEX, 1, (200, 0, 0), 2)
         video.write(img)
     video.release()
     cv.destroyAllWindows()
 
 
-
 """ Creates and saves a video from raw images for a particular well 
 NOTE: change the output path every time -- othervise the movie would be corrupted
-
 """
-def displayFullVideo(start_frame, last_frame, scale_percent = 100, fps = 5, filepath='/Users/Arina/', outpath=None):
-    if outpath==None:
+
+
+def displayFullVideo(start_frame, last_frame, scale_percent=100, fps=5, filepath='/Users/Arina/', outpath=None):
+    if outpath == None:
         outpath = filepath + "/fullPlate.avi"
     img_array = []
     for i in range(start_frame, last_frame):
@@ -41,7 +42,8 @@ def displayFullVideo(start_frame, last_frame, scale_percent = 100, fps = 5, file
         print(newPath)
         img = cv.imread(newPath)
         if img is not None:
-            img = cv.putText(img, str(start_frame+i), (50, 200), cv.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 3)
+            img = cv.putText(img, str(start_frame+i), (50, 200),
+                             cv.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 3)
             width = int(img.shape[1] * scale_percent / 100)
             height = int(img.shape[0] * scale_percent / 100)
             if scale_percent != 100:
@@ -50,7 +52,7 @@ def displayFullVideo(start_frame, last_frame, scale_percent = 100, fps = 5, file
             img_array.append(img)
         else:
             continue
-    fourcc = cv.VideoWriter_fourcc('M','J','P','G')
+    fourcc = cv.VideoWriter_fourcc('M', 'J', 'P', 'G')
     #fourcc = cv.VideoWriter_fourcc(*'X264')
     video = cv.VideoWriter(outpath, fourcc, fps, (width, height))
     for img in img_array:
@@ -59,21 +61,23 @@ def displayFullVideo(start_frame, last_frame, scale_percent = 100, fps = 5, file
     cv.destroyAllWindows()
 
 
-
 """ Creates and saves a video from raw images for a particular well """
+
+
 def displayOrigVideo(start_frame, last_frame, filepath, wellNum, outpath='project.avi', fps=5):
     img_array = []
-    #for filename in sorted(glob.glob('/Users/Arina/Desktop/02/results/well_1/*.png'), key=numericalSort):
+    # for filename in sorted(glob.glob('/Users/Arina/Desktop/02/results/well_1/*.png'), key=numericalSort):
     for i in range(start_frame, last_frame):
-        newPath = filepath + "/" + "results/" + "well_" + str(wellNum) +  "/croppedImage_" + str(i + 1) + ".png"
+        newPath = filepath + "/" + "results/" + "well_" + \
+            str(wellNum) + "/croppedImage_" + str(i + 1) + ".png"
         im = cv.imread(newPath)
         if im is not None:
             img_array.append(im)
         else:
             continue
     frameSize = img_array[0].shape[:2]
-    fourcc = cv.VideoWriter_fourcc('M','J','P','G')
-    video = cv.VideoWriter(outpath, fourcc, fps, frameSize, False)   #10 fps
+    fourcc = cv.VideoWriter_fourcc('M', 'J', 'P', 'G')
+    video = cv.VideoWriter(outpath, fourcc, fps, frameSize, False)  # 10 fps
     for img in img_array:
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         video.write(img)
@@ -81,14 +85,19 @@ def displayOrigVideo(start_frame, last_frame, filepath, wellNum, outpath='projec
     cv.destroyAllWindows()
 
 
-
-
 """ 
-Assumptions: 10 fps; 
+Creates a plot of Major Axis Lenght vesus time. 
+Assumptions: 10 fps
+major_axis_lengths: a LIST containing MAL value by frame  
+MAL: default is True. Set to False if you want to *just* save the figure
+without plotting 
+ title="Plot of MAL over time", outpath = "MAL plot",  show = True
 """
-def plotMAL(major_axis_lengths, MAL = True, title="Plot of MAL over time", outpath = "MAL plot",  show = True):
-    if MAL == True:
-        time = np.arange(start=0, stop=(len(major_axis_lengths))/5, step = 0.2)
+
+
+def plotMAL(major_axis_lengths, MAL=True, title="Plot of MAL over time", outpath="MAL plot",  show=True):
+    if MAL == True:  # TODO: WHY DO WE NEED THIS?
+        time = np.arange(start=0, stop=(len(major_axis_lengths))/5, step=0.2)
         plt.plot(time, major_axis_lengths)
         plt.title(title)
         plt.ylabel('major axis length, pix')
@@ -118,8 +127,10 @@ def plotAxes(img):
     ax.plot(x_coord_axis_minor, y_coord_axis_minor,  '-', linewidth=2)
 
     """ This is Alex's version """
-    axis_major2, inertia, skewness, kurt, vari = data_collection.inertia2(label_image, "major")
-    axis_minor2, inertia, skewness, kurt, vari = data_collection.inertia2(label_image, "minor")
+    axis_major2, inertia, skewness, kurt, vari = data_collection.inertia2(
+        label_image, "major")
+    axis_minor2, inertia, skewness, kurt, vari = data_collection.inertia2(
+        label_image, "minor")
     x_coord_axis_major2 = (axis_major2[1][1], axis_major2[0][1])
     y_coord_axis_major2 = (axis_major2[1][0], axis_major2[0][0])
     x_coord_axis_minor2 = (axis_minor2[1][1], axis_minor2[0][1])
@@ -136,6 +147,7 @@ def plotAxes(img):
 Creates a pane of images to display
 needs some editing 
 """
+
 
 def showImgs():
     # create figure
@@ -155,8 +167,7 @@ def showImgs():
         plt.axis('off')
         plt.title("Well number " + str(i))
 
-#showImgs()
-
+# showImgs()
 
 
 """ 

@@ -2,15 +2,17 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-##TODO: implement background removal / thresholding
+
+# This file provides functionality for binarizing images/
+# removing the background 
 
 
+## CHANGE THIS 
+filename = "/Users/Arina/Desktop/9/well_39/croppedImage39_9.png"
 
-oneWell = cv.imread("/Users/Arina/Desktop/9/well_39/croppedImage39_9.png")
+
+oneWell = cv.imread(filename)
 #cv.waitKey(0)
-
-
-
 # Covert to grayscale
 imgray = cv.cvtColor(oneWell, cv.COLOR_BGR2GRAY)
 #imgray = cv.blur(imgray, (3,3))
@@ -18,8 +20,6 @@ imgray = cv.cvtColor(oneWell, cv.COLOR_BGR2GRAY)
 """
 # Find Canny edges
 edged = cv.Canny(imgray, 30, 200)
-
-
 # Finding Contours
 # Use a copy of the image e.g. edged.copy()
 # since findContours alters the image
@@ -39,10 +39,7 @@ plt.show()
 #cv.waitKey(0)
 """
 
-
 #ret, thresh = cv.threshold(imgray, 127, 255, 0)
-
-
 #find the contours from the thresholded image
 #contours, hierarchy = cv.findContours(binary, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 #contours, hierarchy = cv.findContours(binary, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
@@ -62,9 +59,7 @@ plt.imshow(dst)
 _, binary = cv.threshold(imgray, 225, 255, cv.THRESH_BINARY_INV)
 
 
-
 #Calculate Maximum Width of each worms using Distance Transform
-
 distance = cv.distanceTransform(binary, cv.DIST_L2,5)
 print("gray", binary.shape)
 minv,maxv,minp,maxp = cv.minMaxLoc(distance)

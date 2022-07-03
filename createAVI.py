@@ -150,7 +150,6 @@ if __name__ == "__main__":
     start_frame = int(input("Enter the start frame: "))
     last_frame = int(input("Enter the end frame: "))
     well_num = int(input("Enter the well number: "))  #or -1 for all wells
-
     filepath = input("Enter the filepath : ")    # path to the folder with the images
     
     # change these if necessary 
@@ -159,10 +158,7 @@ if __name__ == "__main__":
 
     if int(well_num) != -1:    # get inside the wells folder
         filepath = filepath + "/results"
-    #filepath = "\'" + filepath + "\'"
-
-    print("\nfilepath is", filepath)
-
+    print("\nThe filepath is", filepath)
     #filepath =  filepath + "/well_" + str(well_num)   
     outpath = filepath + ".avi"
     createAVI(start_frame, last_frame, scale_percent=100, fps=5,

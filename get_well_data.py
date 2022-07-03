@@ -20,7 +20,10 @@ from os.path import exists
 from os import makedirs
 import scrunching_track
 
-plateFolder = "/Users/arina/Desktop/Neuro98 articles + misc/2021_08_12 Arina 3 chem scrunching/18"
+
+### CHANGE THIS TO YOUR PLATE FOLDER PATH
+# Note: the path should NOT have a slash at the end
+plateFolder = "/Users/arina/Desktop/Collins/2021_08_12 Arina 3 chem scrunching/18"
 outputPath = plateFolder + "/results"
 wellDataFolder = outputPath + '/well_data'
 
@@ -50,6 +53,9 @@ for ind in wells:
     wellVidsFolder = outputPath + '/well_vids'
     if exists(wellVidsFolder) is False:
             makedirs(wellVidsFolder)
+
+    # this creates a movie visualizing the results of worm trackig
+    # the `centermost_arr` is a binary mask showing the outline of the worm 
     visualize_results.displayVideo(filtered_imgs=np.array(curr_centermost_arr),outpath=wellVidsFolder + "/" + "binary_well" + str(ind) + '.avi')
 
     visualize_results.plotMAL(curr_mal_arr, MAL=True, title=("well" + str(ind)),
@@ -61,7 +67,8 @@ for ind in wells:
     savetxt(path, data, delimiter=',', fmt='%1.3f')
 
 
-    x = [tup[0] for tup in curr_com_arr]
+
+    x = [tup[0] for tup in curr_com_arr]  # reshaping the array to store x and y coordinates conveniently in a .csv file
     y = [tup[1] for tup in curr_com_arr]
     xy = np.stack((x, y))
     xy = np.transpose(xy)
@@ -72,8 +79,10 @@ for ind in wells:
     filename = os.path.expanduser(wellDataFolder + "/centermost_well" + str(ind) + ".csv")
     curr_centermost_arr = np.array(curr_centermost_arr)
     arrReshaped = curr_centermost_arr.reshape(curr_centermost_arr.shape[0], -1)
-    # saving reshaped array to file.
+    # saving reshaped array (binary mask) to a txt file
+    # this information can be used for calculating the worm's area, etc
     np.savetxt(filename, arrReshaped)
+
 
     data = asarray(curr_asp_ratio_arr)
     path = os.path.expanduser(wellDataFolder + '/AspRatio_well' + str(ind) + '.csv')

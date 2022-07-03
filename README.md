@@ -9,6 +9,7 @@
 * `createAVI.py`: script for creating .avi movies from the raw image sequence; simplifies the process of manual srunching scoring
 * `main_peak_analysis.py`: generates .txt files with data that can be used for further
 * `get_well_data.py`
+* * `rm_background.py`: # This file provides functionality for binarizing images/removing the background 
 
 
 ### Running the scripts
