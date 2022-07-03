@@ -256,7 +256,6 @@ def get_peak_data(mal_arr):
             peak_data[i][2] = peak_data[i][1] - peak_data[i - 1][1]
         # 5th column: width of the peak
         peak_data[i][4] = peak_dict['widths'][i]  # todo: unnecessary bc already filtered out wide enough peaks?
-
         # 6th column: prominence of the peak
         peak_data[i][5] = peak_dict['prominences'][i]
         peak_data[i][6] = peakinds[i] - peak_dict['left_bases'][i]  # 7th: distance to the previous valley (in frames)

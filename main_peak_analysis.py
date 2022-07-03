@@ -3,12 +3,12 @@ import pandas as pd
 from numpy import genfromtxt
 from os import makedirs
 from os.path import exists
-from statistics import stdev, mean
+from statistics import mean
 import statsmodels.api as sm
 import peak_analysis as pa
 
 
-fps = 5
+fps = 5   #### ADJUST IF NECESSARY
 fps_adj = fps / 5
 pix_adj = 1.5
 
@@ -25,7 +25,6 @@ plateFolder = "/Users/arina/Desktop/Collins/2021_08_12 Arina 3 chem scrunching/1
 
 ##### SPECIFY WELLS TO ANALYZE HERE ####
 wells = np.arange(1, 49, 1)   # keep this line if you want to analyze all wells
-wells = [3, 41, 48]
 # use the format below to analyze only some wells
 # e.g. use
 # wells = [3, 41, 48]  
@@ -45,7 +44,6 @@ for well in wells:   # for every well in the list of wells
     smoothing_frac = 6/len(currMAL)
     smoothedMAL = pa.frac_lowess(currMAL, frac=smoothing_frac)  # TODO this might need to be adjusted
     MALs.append(smoothedMAL)
-
 
     # create text files with COM, AspRatio data
     filename = plateFolder + "/results/well_data/COM_well" + str(well) + ".csv"
